@@ -1,6 +1,13 @@
+#include "vm.h"
 #include <stdio.h>
 int main(void)
 {
-    printf("Hello, VM!\n");
+    initVM();
+
+
+
+
+
+    freeVM();
     return 0;
 }
