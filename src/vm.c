@@ -25,25 +25,26 @@ int64_t pop(){
     return *vm.s_pointer;
 }
 
+void debug_stack(){
+    for (int64_t* start = vm.stack; start<vm.s_pointer;start++){
+        printf("[ ");
+        printf("%" PRId64, *start);
+        printf("] ");
+    }
+}
 
 
-
-
-
-
-
-/*
-static InterpretResult run_vm(Instruction* instruction,uint8_t i_pointer ){
-
+static void run_vm(Instruction* instruction){
+    uint8_t* i_pointer=instruction;
     for (;;){
-        Instruction* current_instruction=instruction[i_pointer++];
+        Instruction* current_instruction=i_pointer;
         switch (current_instruction->op_code){
-            case PRINT: {
-                //printf("%" PRId64 "\n", current_instruction->operand);
+            case OP_NEG: {
+                int64_t x = pop();
+                push(-x);
                 break;
             }
         }
     }
 
 }
-*/

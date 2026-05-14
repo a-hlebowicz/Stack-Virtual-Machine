@@ -3,11 +3,12 @@
 #define STACK_SIZE 256
 
 typedef enum {
-    PUSH,
-    POP,
-    ADD,
-    SUB,
-    PRINT
+    OP_PUSH,
+    OP_POP,
+    OP_ADD,
+    OP_SUB,
+    OP_PRINT,
+    OP_NEG
 } OpCode;
 
 typedef struct {
@@ -34,5 +35,6 @@ void freeVM();
 //InterpretResult interpret(Instruction* instruction[]);
 void push(int64_t x);
 int64_t pop();
+void debug_stack();
 
 #endif
