@@ -4,14 +4,14 @@ int main(void)
 {
     initVM();
     //printf("obrot \n");
-
-    static Instr instruction[] = {
-        {OP_PUSH, 5},
-        {OP_NEG, 0},
-        {OP_PRINT, 0},
-        {OP_STOP, 0},
+    Instr t10[] = {
+    {OP_PUSH, -5},
+    {OP_PUSH, -3},
+    {OP_ADD, 0},
+    {OP_PRINT, 0},
+    {OP_STOP, 0},
     };
-    run_vm(instruction);
+    run_vm(t10);
 
     freeVM();
     return 0;

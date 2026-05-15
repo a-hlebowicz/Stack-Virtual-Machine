@@ -39,11 +39,6 @@ void run_vm(Instr* instruction){
     Instr* instr=instruction;
     for (;;){
         switch (instr->opCode){
-            case OP_NEG: {
-                int64_t x = pop();
-                push(-x);
-                break;
-            }
             case OP_PUSH: {
                 push(instr->arg);
                 break;
@@ -55,12 +50,45 @@ void run_vm(Instr* instruction){
             case OP_PRINT: {
                 int64_t x = pop();
                 printf("%" PRId64 "\n", x);
-                push(x);
+                //push(x);
                 break;
             }
             case OP_STOP:{
                 printf("STOP");
                 return;
+            }
+            case OP_NEG: {
+                int64_t x = pop();
+                push(-x);
+                break;
+            }
+            case OP_ADD: {
+                int64_t y = pop();
+                int64_t x = pop();
+                push(x+y);
+                break;
+            }
+            case OP_SUB: {
+                int64_t y = pop();
+                int64_t x = pop();
+                push(x-y);
+                break;
+            }
+            case OP_MUL: {
+                int64_t y = pop();
+                int64_t x = pop();
+                push(x*y);
+                break;
+            }
+            case OP_DIV: {
+                int64_t y = pop();
+                int64_t x = pop();
+                if (y==0){
+                    printf("Division by zero\n");
+                    return;
+                }
+                push(x/y);
+                break;
             }
             default: {
                 break;
