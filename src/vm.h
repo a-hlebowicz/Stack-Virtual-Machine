@@ -1,4 +1,5 @@
-#ifndef vm.h
+#ifndef VM_H
+#define VM_H
 #include <stdint.h>
 #define STACK_SIZE 256
 
@@ -8,20 +9,23 @@ typedef enum {
     OP_ADD,
     OP_SUB,
     OP_PRINT,
-    OP_NEG
+    OP_NEG,
+    OP_MUL,
+    OP_DIV,
+    OP_STOP,
 } OpCode;
 
 typedef struct {
-    OpCode op_code;
-    int64_t operand;
+    OpCode opCode;
+    int64_t arg;
 
-} Instruction;
+} Instr;
 
 typedef struct {
-    Instruction* instruction;
-    uint8_t* i_pointer;
+    //Instr* instr;
+    //Instr *ip;                  //instruction pointer
     int64_t stack[STACK_SIZE];
-    uint8_t* s_pointer;
+    int64_t* sp;                //stack pointer
 } VM;
 /*
 typedef enum {
@@ -30,11 +34,12 @@ typedef enum {
   INTERPRET_RUNTIME_ERROR
 } InterpretResult;
 */
-void initVM();
-void freeVM();
+void initVM(void);
+void freeVM(void);
 //InterpretResult interpret(Instruction* instruction[]);
 void push(int64_t x);
-int64_t pop();
+int64_t pop(void);
 void debug_stack();
+void run_vm();
 
 #endif

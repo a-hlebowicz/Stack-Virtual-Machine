@@ -1,10 +1,11 @@
 #include "vm.h"
 #include <inttypes.h>
+#include <stdio.h>
 
 VM vm;
 
 static void resetStack() {
-  vm.s_pointer = vm.stack;
+  vm.sp = vm.stack;
 }
 
 void initVM(){
@@ -16,17 +17,17 @@ void freeVM(){
 }
 
 void push(int64_t x){
-    *vm.s_pointer = x;
-    vm.s_pointer++;
+    *vm.sp = x;
+    vm.sp++;
 }
 
 int64_t pop(){
-    vm.s_pointer--;
-    return *vm.s_pointer;
+    vm.sp--;
+    return *vm.sp;
 }
 
 void debug_stack(){
-    for (int64_t* start = vm.stack; start<vm.s_pointer;start++){
+    for (int64_t* start = vm.stack; start<vm.sp;start++){
         printf("[ ");
         printf("%" PRId64, *start);
         printf("] ");
@@ -34,17 +35,41 @@ void debug_stack(){
 }
 
 
-static void run_vm(Instruction* instruction){
-    uint8_t* i_pointer=instruction;
+void run_vm(Instr* instruction){
+    Instr* instr=instruction;
     for (;;){
-        Instruction* current_instruction=i_pointer;
-        switch (current_instruction->op_code){
+        switch (instr->opCode){
             case OP_NEG: {
                 int64_t x = pop();
                 push(-x);
                 break;
             }
+            case OP_PUSH: {
+                push(instr->arg);
+                break;
+            }
+            case OP_POP: {
+                pop();
+                break;
+            }
+            case OP_PRINT: {
+                int64_t x = pop();
+                printf("%" PRId64 "\n", x);
+                push(x);
+                break;
+            }
+            case OP_STOP:{
+                printf("STOP");
+                return;
+            }
+            default: {
+                break;
+            }
         }
+        instr++;
+        //printf("%p",vm.ip);
+        //printf("\n");
+        
     }
 
 }
