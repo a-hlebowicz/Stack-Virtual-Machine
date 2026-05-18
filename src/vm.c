@@ -90,6 +90,16 @@ void run_vm(Instr* instruction){
                 push(x/y);
                 break;
             }
+            case OP_STORE_LOCAL:{
+                int x = instr->arg;         //arg store_local to miejsce na stosie w ktorym jest zmienna
+                vm.stack[x] = pop();    
+                break;
+            }
+            case OP_LOAD_LOCAL: {
+                int x = instr->arg;
+                push(vm.stack[x]);       
+                break;
+            }
             default: {
                 break;
             }
