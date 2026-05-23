@@ -1,5 +1,4 @@
-#ifndef VM_H
-#define VM_H
+#pragma once
 #include <stdint.h>
 #define STACK_SIZE 256
 
@@ -44,5 +43,3 @@ void push(int64_t x);
 int64_t pop(void);
 void debug_stack();
 void run_vm();
-
-#endif
