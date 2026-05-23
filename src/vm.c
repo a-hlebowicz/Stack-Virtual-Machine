@@ -100,6 +100,13 @@ void run_vm(Instr* instruction){
                 push(vm.stack[x]);       
                 break;
             }
+            case OP_JMP_IF_FALSE: {
+                int64_t cond = pop();
+                if (cond == 0) {
+                    instr +=instr->arg;    //jak dodajemy 2 to samo juz dodaje 2*sizeof(instr[0])
+                }
+                break;
+            }
             default: {
                 break;
             }

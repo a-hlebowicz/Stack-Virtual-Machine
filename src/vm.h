@@ -15,6 +15,7 @@ typedef enum {
     OP_STOP,
     OP_STORE_LOCAL,
     OP_LOAD_LOCAL,
+    OP_JMP_IF_FALSE,
 } OpCode;
 
 typedef struct {
