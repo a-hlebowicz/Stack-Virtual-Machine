@@ -20,49 +20,81 @@ static Token makeToken(TokenType type){
 static bool isAtEnd(){
     return s.source[s.current] == '\0';
 }
+static char peek_next(void) {
+    if (isAtEnd()) return '\0';
+    return s.source[s.current + 1];
+}
 static bool match(char expected){
     if (isAtEnd())return false;
     if (s.source[s.current]!= expected) return false;
     s.current++;
     return true;
 }
-static Token scan(){
-    char c = s.source[s.current++];
-        switch (c){
-            //single
-            case '(': return makeToken(TOK_LEFT_PAREN);
-            case ')': return makeToken(TOK_RIGHT_PAREN);
-            case '{': return makeToken(TOK_LEFT_BRACE);
-            case '}': return makeToken(TOK_RIGHT_BRACE);
-            case ',': return makeToken(TOK_COMMA);
-            case '.': return makeToken(TOK_DOT);
-            case '-': return makeToken(TOK_MINUS);
-            case '+': return makeToken(TOK_PLUS);
-            case ';': return makeToken(TOK_SEMICOLON);
-            
-            //double
-            case '!': {
-                if (match('='))return makeToken(TOK_BANG_EQUAL);
-                else return makeToken(TOK_BANG);
-            }
-            case '=': {
-                if (match('='))return makeToken(TOK_EQUAL_EQUAL);
-                else return makeToken(TOK_EQUAL);
-            }
-            case '<': {
-                if (match('='))return makeToken(TOK_LESS_EQUAL);
-                else return makeToken(TOK_LESS);
-            }
-            case '>': {
-                if (match('='))return makeToken(TOK_GREATER_EQUAL);
-                else return makeToken(TOK_GREATER);
-            }
-
-
+static void skipWhitespace(void) {
+    for (;;) {
+        char c = s.source[s.current];
+        switch (c) {
+            case ' ':
+            case '\t':
+            case '\r':
+                s.current++;
+                break;
+            case '\n':
+                s.line++;
+                s.current++;
+                break;
+            case '/':
+                if (peek_next() == '/') {
+                    while (!isAtEnd() && s.source[s.current] != '\n') s.current++;
+                } else {
+                    return;
+                }
+                break;
             default:
-                printf("Unexpected character.");
-                return makeToken(TOK_ERROR);
+                return;
         }
+    }
+}
+
+static Token scan(){
+    skipWhitespace();
+    if (isAtEnd()) return makeToken(TOK_EOF);
+    char c = s.source[s.current++];
+    switch (c){
+        //single
+        case '(': return makeToken(TOK_LEFT_PAREN);
+        case ')': return makeToken(TOK_RIGHT_PAREN);
+        case '{': return makeToken(TOK_LEFT_BRACE);
+        case '}': return makeToken(TOK_RIGHT_BRACE);
+        case ',': return makeToken(TOK_COMMA);
+        case '.': return makeToken(TOK_DOT);
+        case '-': return makeToken(TOK_MINUS);
+        case '+': return makeToken(TOK_PLUS);
+        case ';': return makeToken(TOK_SEMICOLON);
+        
+        //double
+        case '!': {
+            if (match('='))return makeToken(TOK_BANG_EQUAL);
+            else return makeToken(TOK_BANG);
+        }
+        case '=': {
+            if (match('='))return makeToken(TOK_EQUAL_EQUAL);
+            else return makeToken(TOK_EQUAL);
+        }
+        case '<': {
+            if (match('='))return makeToken(TOK_LESS_EQUAL);
+            else return makeToken(TOK_LESS);
+        }
+        case '>': {
+            if (match('='))return makeToken(TOK_GREATER_EQUAL);
+            else return makeToken(TOK_GREATER);
+        }
+
+
+        default:
+            printf("Unexpected character.");
+            return makeToken(TOK_ERROR);
+    }
 }
 
 
@@ -81,8 +113,10 @@ Token* lex(char source[]){
         s.start = s.current;
 
         Token t = scan();
+        
+        if (t.type == TOK_EOF) break;
 
-        if (count-1 >= capacity) {
+        if (count+1 >= capacity) {
             capacity *= 2;
             tokens = realloc(tokens, capacity * sizeof(Token));
         }
