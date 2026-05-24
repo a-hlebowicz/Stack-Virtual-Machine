@@ -23,11 +23,13 @@ typedef enum {
 typedef struct {
     TokenType type;
     int64_t value;
+    int start;
+    int length;
 } Token;
 
 
 Token* lex(char source[]);
 
 
-void print_tokens();
+void print_tokens(Token* tokens, const char *source);
 

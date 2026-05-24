@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <inttypes.h>
+#include <string.h>
 
 typedef struct {
     const char *source;
@@ -15,10 +17,21 @@ Scanner s;
 static Token makeToken(TokenType type){
     Token token;
     token.type = type;
+    token.start = s.start;
+    token.length = s.current - s.start;
+    token.value = 0;
     return token;
 }
 static bool isAtEnd(){
     return s.source[s.current] == '\0';
+}
+static bool isDigit(char c) {
+    return c >= '0' && c <= '9';
+}
+static bool isAlpha(char c) {
+  return (c >= 'a' && c <= 'z') ||
+         (c >= 'A' && c <= 'Z') ||
+          c == '_';
 }
 static char peek_next(void) {
     if (isAtEnd()) return '\0';
@@ -56,18 +69,60 @@ static void skipWhitespace(void) {
     }
 }
 
+static Token scan_number(){
+    int64_t value = s.source[s.start] -'0';    
+    while(isDigit(s.source[s.current])){
+        value = value*10 + s.source[s.current] - '0';
+        s.current++;
+    }
+    Token t = makeToken(TOK_NUMBER);
+    t.value = value;
+    return t;
+}
+static TokenType check_keyword(int start, int length, const char *rest, TokenType type) {
+    if (s.current - s.start == start + length &&                      
+        memcmp(&s.source[s.start + start], rest, length) == 0) {      
+        return type;                                                  
+    }
+    return TOK_IDENTIFIER;
+}
+static TokenType identifier_type(){
+    switch (s.source[s.start]){
+        case 'e': return check_keyword(1, 3, "lse", TOK_ELSE);
+        case 'i': {
+            if (s.current - s.start > 1) {
+                switch (s.source[s.start + 1]) {
+                    case 'f': return check_keyword(2, 0, "",  TOK_IF);
+                    case 'n': return check_keyword(2, 1, "t", TOK_INT);
+                }
+            }
+            break; 
+        }
+        case 'p': return check_keyword(1, 4, "rint", TOK_PRINT);
+        case 'w': return check_keyword(1, 4, "hile", TOK_WHILE);
+    }
+    return TOK_IDENTIFIER; 
+}
+static Token scan_identifier(){
+    while (isAlpha(s.source[s.current]) || isDigit(s.source[s.current]))  s.current++;
+    return makeToken(identifier_type());
+    
+}
 static Token scan(){
     skipWhitespace();
+    s.start = s.current;
     if (isAtEnd()) return makeToken(TOK_EOF);
     char c = s.source[s.current++];
+    if (isDigit(c)) return scan_number();
+    if (isAlpha(c)) return scan_identifier();
     switch (c){
         //single
         case '(': return makeToken(TOK_LEFT_PAREN);
         case ')': return makeToken(TOK_RIGHT_PAREN);
         case '{': return makeToken(TOK_LEFT_BRACE);
         case '}': return makeToken(TOK_RIGHT_BRACE);
-        //case ',': return makeToken(TOK_COMMA);
-        //case '.': return makeToken(TOK_DOT);
+        case '/': return makeToken(TOK_SLASH);
+        case '*': return makeToken(TOK_STAR);
         case '-': return makeToken(TOK_MINUS);
         case '+': return makeToken(TOK_PLUS);
         case ';': return makeToken(TOK_SEMICOLON);
@@ -110,8 +165,6 @@ Token* lex(char source[]){
     s.line = 1;
 
     for(;;) {
-        s.start = s.current;
-
         Token t = scan();
 
         if (count+1 >= capacity) {
@@ -144,10 +197,20 @@ const char* tokenTypeToString(TokenType type) {
 
     return names[type];
 }
-void print_tokens(Token* tokens){
+void print_tokens(Token* tokens, const char *source){
     for (int i=0;true;i++){
-        printf("type = %s \n",tokenTypeToString(tokens[i].type));
-        if (tokens[i].type == TOK_EOF) return;
+        Token t=tokens[i];
+        printf("type = %s",tokenTypeToString(t.type));
+        if (t.type == TOK_NUMBER)printf(", value = %" PRId64, t.value);
+        if (t.type == TOK_IDENTIFIER){
+            printf(", value = ");
+            for (int j=t.start;t.start+t.length>j;j++){
+                printf("%c", source[j]);
+            }
+        }
+
+        printf("\n");
+        if (t.type == TOK_EOF) return;
     }
 }
 

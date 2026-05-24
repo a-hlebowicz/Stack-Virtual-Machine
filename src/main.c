@@ -3,9 +3,9 @@
 #include <stdio.h>
 int main(void)
 {
-    const char *source = "+ == = //komentarz +";
+    const char *source = "xd + y = else //fajny kod";
     Token *tokens = lex(source);
-    print_tokens(tokens);
+    print_tokens(tokens, source);
     //free(tokens);
     return 0;
 }
