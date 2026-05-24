@@ -1,2 +1,3 @@
 @echo off
-gcc -std=c17 -Wall -Wextra -O0 -g -o vm.exe src\main.c src\vm.c src\lexer.c
+gcc -std=c17 -Wall -Wextra -O0 -g -o svm.exe src\main.c src\vm.c src\lexer.c
+svm.exe

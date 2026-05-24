@@ -28,7 +28,7 @@ typedef struct {
 } Token;
 
 
-Token* lex(char source[]);
+Token* lex(const char source[]);
 
 
 void print_tokens(Token* tokens, const char *source);

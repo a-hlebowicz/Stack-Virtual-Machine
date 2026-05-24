@@ -153,7 +153,7 @@ static Token scan(){
 }
 
 
-Token* lex(char source[]){
+Token* lex(const char source[]){
     int capacity = 8;
     int count = 0;
     Token *tokens = malloc(capacity * sizeof(Token));
