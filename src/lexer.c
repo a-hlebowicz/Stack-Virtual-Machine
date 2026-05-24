@@ -66,8 +66,8 @@ static Token scan(){
         case ')': return makeToken(TOK_RIGHT_PAREN);
         case '{': return makeToken(TOK_LEFT_BRACE);
         case '}': return makeToken(TOK_RIGHT_BRACE);
-        case ',': return makeToken(TOK_COMMA);
-        case '.': return makeToken(TOK_DOT);
+        //case ',': return makeToken(TOK_COMMA);
+        //case '.': return makeToken(TOK_DOT);
         case '-': return makeToken(TOK_MINUS);
         case '+': return makeToken(TOK_PLUS);
         case ';': return makeToken(TOK_SEMICOLON);
@@ -75,7 +75,7 @@ static Token scan(){
         //double
         case '!': {
             if (match('='))return makeToken(TOK_BANG_EQUAL);
-            else return makeToken(TOK_BANG);
+            else return makeToken(TOK_ERROR);
         }
         case '=': {
             if (match('='))return makeToken(TOK_EQUAL_EQUAL);
@@ -109,12 +109,10 @@ Token* lex(char source[]){
     s.current = 0;
     s.line = 1;
 
-    while (!isAtEnd()) {
+    for(;;) {
         s.start = s.current;
 
         Token t = scan();
-        
-        if (t.type == TOK_EOF) break;
 
         if (count+1 >= capacity) {
             capacity *= 2;
@@ -122,61 +120,27 @@ Token* lex(char source[]){
         }
 
         tokens[count++] = t;
-    }
 
-    //TOK_EOF
+        if (t.type == TOK_EOF) break;
+    }
 
     return tokens;
 }
 
 const char* tokenTypeToString(TokenType type) {
     static const char* names[] = {
-        "TOK_LEFT_PAREN",
-        "TOK_RIGHT_PAREN",
-        "TOK_LEFT_BRACE",
-        "TOK_RIGHT_BRACE",
-        "TOK_COMMA",
-        "TOK_DOT",
-        "TOK_MINUS",
-        "TOK_PLUS",
-        "TOK_SEMICOLON",
-        "TOK_SLASH",
-        "STAR",
-
-        "TOK_BANG",
-        "TOK_BANG_EQUAL",
-        "TOK_EQUAL",
-        "TOK_EQUAL_EQUAL",
-        "TOK_GREATER",
-        "TOK_GREATER_EQUAL",
-        "TOK_LESS",
-        "TOK_LESS_EQUAL",
-
-        "TOK_IDENTIFIER",
-        "TOK_STRING",
-        "TOK_NUMBER",
-
-        "TOK_AND",
-        "TOK_CLASS",
-        "TOK_ELSE",
-        "TOK_FALSE",
-        "TOK_FUN",
-        "TOK_FOR",
-        "TOK_IF",
-        "TOK_NIL",
-        "TOK_OR",
-
-        "TOK_PRINT",
-        "TOK_RETURN",
-        "TOK_SUPER",
-        "TOK_THIS",
-        "TOK_TRUE",
-        "TOK_VAR",
-        "TOK_WHILE",
-
-        "TOK_EOF",
-        "TOK_ERROR"
-    };
+    "TOK_LEFT_PAREN", "TOK_RIGHT_PAREN",
+    "TOK_LEFT_BRACE", "TOK_RIGHT_BRACE",
+    "TOK_MINUS", "TOK_PLUS", "TOK_SEMICOLON",
+    "TOK_SLASH", "TOK_STAR",
+    "TOK_BANG_EQUAL",
+    "TOK_EQUAL", "TOK_EQUAL_EQUAL",
+    "TOK_GREATER", "TOK_GREATER_EQUAL",
+    "TOK_LESS", "TOK_LESS_EQUAL",
+    "TOK_IDENTIFIER", "TOK_NUMBER",
+    "TOK_INT", "TOK_IF", "TOK_ELSE", "TOK_WHILE", "TOK_PRINT",
+    "TOK_EOF", "TOK_ERROR"
+};
 
     return names[type];
 }

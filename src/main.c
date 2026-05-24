@@ -3,7 +3,7 @@
 #include <stdio.h>
 int main(void)
 {
-    const char *source = "+ == ! //komentarz +";
+    const char *source = "+ == = //komentarz +";
     Token *tokens = lex(source);
     print_tokens(tokens);
     //free(tokens);
