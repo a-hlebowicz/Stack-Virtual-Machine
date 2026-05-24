@@ -15,6 +15,13 @@ typedef enum {
     OP_STORE_LOCAL,
     OP_LOAD_LOCAL,
     OP_JMP_IF_FALSE,
+    OP_JMP,
+    OP_EQ,
+    OP_NEQ,
+    OP_LT,
+    OP_GT,
+    OP_LE,
+    OP_GE,
 } OpCode;
 
 typedef struct {
@@ -41,5 +48,5 @@ void freeVM(void);
 //InterpretResult interpret(Instruction* instruction[]);
 void push(int64_t x);
 int64_t pop(void);
-void debug_stack();
-void run_vm();
+void debug_stack(void);
+void run_vm(Instr *instruction);

@@ -107,6 +107,46 @@ void run_vm(Instr* instruction){
                 }
                 break;
             }
+            case OP_JMP: {
+                instr +=instr->arg;
+                break;
+            }
+            case OP_EQ: {
+                int64_t b = pop();
+                int64_t a = pop(); 
+                push(a == b); 
+                break;
+            }
+            case OP_NEQ: {
+                int64_t b = pop();
+                int64_t a = pop(); 
+                push(a != b); 
+                break;
+            }
+            case OP_LT: {
+                int64_t b = pop();
+                int64_t a = pop(); 
+                push(a < b); 
+                break;
+            }
+            case OP_GT: {
+                int64_t b = pop();
+                int64_t a = pop(); 
+                push(a > b); 
+                break;
+            }
+            case OP_LE: {
+                int64_t b = pop();
+                int64_t a = pop(); 
+                push(a <= b); 
+                break;
+            }
+            case OP_GE: {
+                int64_t b = pop();
+                int64_t a = pop(); 
+                push(a >= b); 
+                break;
+            }
             default: {
                 break;
             }

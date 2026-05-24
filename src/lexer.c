@@ -180,7 +180,7 @@ Token* lex(const char source[]){
     return tokens;
 }
 
-const char* tokenTypeToString(TokenType type) {
+static const char* tokenTypeToString(TokenType type) {
     static const char* names[] = {
     "TOK_LEFT_PAREN", "TOK_RIGHT_PAREN",
     "TOK_LEFT_BRACE", "TOK_RIGHT_BRACE",
